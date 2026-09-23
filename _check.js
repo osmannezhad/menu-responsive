@@ -1,0 +1,16 @@
+const fs = require('fs');
+const h = fs.readFileSync('index.html', 'utf8');
+const c = fs.readFileSync('style.css', 'utf8');
+const opens = (h.match(/<(div|footer|ul|li|section|header|main|aside|nav)\b/g) || []).length;
+const closes = (h.match(/<\/(div|footer|ul|li|section|header|main|aside|nav)>/g) || []).length;
+const problems = [];
+if (!h.includes('class="site-footer"')) problems.push('footer element missing');
+if (!h.includes('footer-brand-col')) problems.push('column 1 missing');
+if ((h.match(/class="footer-title"/g) || []).length !== 2) problems.push('expected 2 titled columns');
+if ((h.match(/class="footer-col/g) || []).length !== 3) problems.push('expected 3 footer columns');
+if (!c.includes('.site-footer {')) problems.push('footer styles missing');
+if (!c.includes('.footer-inner')) problems.push('footer grid missing');
+if (!c.includes('.footer-toggle')) problems.push('mobile accordion styles missing');
+const s = fs.readFileSync('script.js', 'utf8');
+if (!s.includes('footer-toggle')) problems.push('accordion JS missing');
+console.log(JSON.stringify({ tagOpens: opens, tagCloses: closes, balanced: opens === closes, problems }, null, 1));

@@ -309,4 +309,53 @@
   });
 
   renderResults("");
+
+  /* =========================================================
+     Footer
+     ========================================================= */
+  const footerYear = document.getElementById("footer-year");
+  if (footerYear) footerYear.textContent = String(new Date().getFullYear());
+
+  /* back-to-top button */
+  const toTop = document.getElementById("to-top");
+  if (toTop) {
+    toTop.addEventListener("click", function () {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
+
+  /* Collapse footer columns on phones (accordion) */
+  const footerToggles = document.querySelectorAll(".footer-toggle");
+  const phoneQuery = window.matchMedia("(max-width: 560px)");
+
+  footerToggles.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (!phoneQuery.matches) return;
+      const col = btn.closest(".footer-col");
+      const open = btn.getAttribute("aria-expanded") === "true";
+
+      footerToggles.forEach(function (other) {
+        if (other !== btn) {
+          other.setAttribute("aria-expanded", "false");
+          const c = other.closest(".footer-col");
+          if (c) c.classList.remove("is-open");
+        }
+      });
+
+      btn.setAttribute("aria-expanded", String(!open));
+      if (col) col.classList.toggle("is-open", !open);
+    });
+  });
+
+  /* reset the footer state when leaving / entering phone width */
+  function resetFooter() {
+    if (phoneQuery.matches) return;
+    footerToggles.forEach(function (btn) {
+      btn.setAttribute("aria-expanded", "false");
+      const c = btn.closest(".footer-col");
+      if (c) c.classList.remove("is-open");
+    });
+  }
+  if (phoneQuery.addEventListener) phoneQuery.addEventListener("change", resetFooter);
+  else if (phoneQuery.addListener) phoneQuery.addListener(resetFooter);
 })();
